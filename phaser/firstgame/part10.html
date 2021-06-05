@@ -3,18 +3,30 @@
 <head> 
     <meta charset="UTF-8" />
     <title>Making your first Phaser 3 Game - Part 10</title>
-    <script src="//cdn.jsdelivr.net/npm/phaser@3.11.0/dist/phaser.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser-arcade-physics.min.js"></</script>
     <style type="text/css">
         body {
             margin: 0;
+        }
+        canvas {
+            /*width: 100%;*/
+            height: 100%;
         }
     </style>
 </head>
 <body>
 
 <script type="text/javascript">
+window.mobileInput = {};
 
 var config = {
+    scale: {
+        mode: Phaser.Scale.FIT,
+        parent: 'phaser-example',
+        autoCenter: Phaser.Scale.CENTER_BOTH,
+        width: 800,
+        height: 600
+    },
     type: Phaser.AUTO,
     width: 800,
     height: 600,
@@ -99,6 +111,54 @@ function create ()
 
     //  Input Events
     cursors = this.input.keyboard.createCursorKeys();
+    // Mobile Input
+    this.input.on('pointerdown', function(pointer) {
+        var perX = (pointer.downX-pointer.event.target.offsetLeft)/pointer.event.target.clientWidth;
+        var perY = (pointer.downY)/(pointer.event.target.clientHeight);
+        //alert(perX);
+        //alert(perY);
+        window.mobileInput.isDown = true;
+        if (perX < 0.5) {
+            // Move to the left
+            window.mobileInput.left = true;
+        } else {
+            // Move to the right
+            window.mobileInput.right = true;
+        }
+        if (perY < 0.6) {
+            // Jump
+            window.mobileInput.up = true;
+        }
+    }, this);
+    
+    this.input.on('pointerup', function(pointer) {
+        window.mobileInput.left = false;
+        window.mobileInput.right = false;
+        window.mobileInput.up = false;
+        window.mobileInput.isDown = false;
+    }, this);
+    
+    this.input.on('pointermove', function(pointer) {
+        if (window.mobileInput.isDown) {
+            var perX = (pointer.downX-pointer.event.target.offsetLeft)/pointer.event.target.clientWidth;
+            var perY = (pointer.downY)/(pointer.event.target.clientHeight);
+            if (perX < 0.5) {
+                // Move to the left
+                window.mobileInput.left = true;
+                window.mobileInput.right = false;
+            } else {
+                // Move to the right
+                window.mobileInput.right = true;
+                window.mobileInput.left = false;
+            }
+            if (perY < 0.6) {
+                // Jump
+                window.mobileInput.up = true;
+            } else {
+                window.mobileInput.up = false;
+            }
+        }
+    }, this);
 
     //  Some stars to collect, 12 in total, evenly spaced 70 pixels apart along the x axis
     stars = this.physics.add.group({
@@ -137,17 +197,19 @@ function update ()
         return;
     }
 
-    if (cursors.left.isDown)
+    if (cursors.left.isDown || window.mobileInput.left)
     {
         player.setVelocityX(-160);
 
         player.anims.play('left', true);
+        //window.mobileInput.left = false;
     }
-    else if (cursors.right.isDown)
+    else if (cursors.right.isDown || window.mobileInput.right)
     {
         player.setVelocityX(160);
 
         player.anims.play('right', true);
+        //window.mobileInput.right = false;
     }
     else
     {
@@ -156,9 +218,10 @@ function update ()
         player.anims.play('turn');
     }
 
-    if (cursors.up.isDown && player.body.touching.down)
+    if ((cursors.up.isDown || window.mobileInput.up)&& player.body.touching.down)
     {
         player.setVelocityY(-330);
+        //window.mobileInput.up = false;
     }
 }
 
