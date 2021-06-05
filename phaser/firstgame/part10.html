@@ -113,8 +113,8 @@ function create ()
     cursors = this.input.keyboard.createCursorKeys();
     // Mobile Input
     this.input.on('pointerdown', function(pointer) {
-        var perX = (pointer.downX-pointer.event.target.offsetLeft)/pointer.event.target.clientWidth;
-        var perY = (pointer.downY)/(pointer.event.target.clientHeight);
+        var perX = (pointer.position.x)/pointer.event.target.clientWidth;
+        var perY = (pointer.position.y)/(pointer.event.target.clientHeight);
         //alert(perX);
         //alert(perY);
         window.mobileInput.isDown = true;
@@ -140,8 +140,9 @@ function create ()
     
     this.input.on('pointermove', function(pointer) {
         if (window.mobileInput.isDown) {
-            var perX = (pointer.downX-pointer.event.target.offsetLeft)/pointer.event.target.clientWidth;
-            var perY = (pointer.downY)/(pointer.event.target.clientHeight);
+            var perX = (pointer.position.x)/pointer.event.target.clientWidth;
+            var perY = (pointer.position.y)/(pointer.event.target.clientHeight);
+                        console.log(pointer);
             if (perX < 0.5) {
                 // Move to the left
                 window.mobileInput.left = true;
