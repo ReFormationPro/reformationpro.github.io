@@ -1,0 +1,13 @@
+{
+    "$schema": "https://json.schemastore.org/web-manifest-combined.json",
+    "name": "MyQix",
+    "short_name": "MyQix",
+    "start_url": ".",
+    "background_color": "#fff",
+    "description": "An implementation of the Qix game.",
+    "icons": [],
+    "related_applications": [],
+    "display":      "standalone",
+    "orientation":  "landscape"
+  }
+  

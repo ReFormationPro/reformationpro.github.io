@@ -1,3 +1,0 @@
-
-        const a = new PIXI.Extract(app.renderer as PIXI.Renderer);
-        a.canvas()
